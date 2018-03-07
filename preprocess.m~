@@ -48,10 +48,7 @@ for i = 1:z
         
         %APPLY GLRL
         glrls = grayrlmatrix(CC, 'NumLevels',100,'GrayLimits', [0,4095]);
-       AA(:,:,k) =grayrlprops(glrls)
-%         LRE(k) = getfield(graycoprops(glcms),'Correlation');
-%         Energy(k) = getfield(graycoprops(glcms),'Energy');
-%         Homogeneity(k) = getfield(graycoprops(glcms),'Homogeneity');
+        
         
         
         %figure,imshow(CC,[]);
