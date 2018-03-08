@@ -1,6 +1,6 @@
 clear;
 clc;
-info = mha_read_header('1000085970.mha');
+info = mha_read_header("1000085970.mha");
 V = mha_read_volume(info);
 [x,y,z]=size(V);
 Imagearray=[];
@@ -48,11 +48,18 @@ for i = 1:z
         
         %APPLY GLRL
         glrls = grayrlmatrix(CC, 'NumLevels',100,'GrayLimits', [0,4095]);
-       AA(:,:,k) =grayrlprops(glrls)
+        AA(:,:,k) =grayrlprops(glrls);
 %         LRE(k) = getfield(graycoprops(glcms),'Correlation');
 %         Energy(k) = getfield(graycoprops(glcms),'Energy');
 %         Homogeneity(k) = getfield(graycoprops(glcms),'Homogeneity');
         
+        %Gray-level gradient matrix
+       [gradientmtx,dir] = imgradient(CC);
+       
+       grdtmean(k)=mean(gradientmtx(:));
+       grdtvariance(k)=var(gradientmtx(:));
+       grdtkurtosis(k)=kurtosis(gradientmtx(:));
+       grdtskewness(k)=skewness(gradientmtx(:));
         
         %figure,imshow(CC,[]);
         k=k+1;
@@ -70,7 +77,13 @@ Imagecontrast=mean(Contrast);
 Imagecorrelation=mean(Correlation);
 Imageenergy=mean(Energy);
 Imagehomogeneity=mean(Homogeneity);
+%GLRL features
 
+%grey level gradient features
+Imagegrdtmean=mean(grdtmean);
+Imagegrdtvar=mean(grdtvariance);
+Imagegrdtkts=mean(grdtkurtosis);
+Imagegrdtskw=mean(grdtskewness);
 
 
     
