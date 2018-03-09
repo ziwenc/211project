@@ -39,7 +39,6 @@ for i = 1:z
         BoxImage{k}=CC;
         %Imagearray[:,:,1]=C
         %APPLY GLCMS
-        
         glcms = graycomatrix(CC, 'NumLevels',100,'GrayLimits',[0 4095]);
         Contrast(k) = getfield(graycoprops(glcms),'Contrast');
         Correlation(k) = getfield(graycoprops(glcms),'Correlation');
@@ -48,7 +47,7 @@ for i = 1:z
         
         %APPLY GLRL
         glrls = grayrlmatrix(CC, 'NumLevels',100,'GrayLimits', [0,4095]);
-        AA(:,:,k) =grayrlprops(glrls);
+        glrlstcs(:,:,k) =grayrlprops(glrls);
 %         LRE(k) = getfield(graycoprops(glcms),'Correlation');
 %         Energy(k) = getfield(graycoprops(glcms),'Energy');
 %         Homogeneity(k) = getfield(graycoprops(glcms),'Homogeneity');
@@ -73,13 +72,56 @@ Imagemedian=median(s);
 Imagestd2=std2(s);
 Imagestd=std(s);
 %GLCM features
-Imagecontrast=mean(Contrast);
-Imagecorrelation=mean(Correlation);
-Imageenergy=mean(Energy);
-Imagehomogeneity=mean(Homogeneity);
-%gradient fea
+ImageContrast=mean(Contrast);
+ImageCorrelation=mean(Correlation);
+ImageEnergy=mean(Energy);
+ImageHomogeneity=mean(Homogeneity);
+        
+%GLRL features
+% 1. Short Run Emphasis (SRE)
+    SRE = mean(mean(glrlstcs(:,1,:)));
+    % 2. Long Run Emphasis (LRE)
+    LRE = mean(mean(glrlstcs(:,2,:)));
+    % 3. Gray-Level Nonuniformity (GLN)
+    GLN = mean(mean(glrlstcs(:,3,:)));
+    % 4. Run Length Nonuniformity (RLN)
+    RLN = mean(mean(glrlstcs(:,4,:)));
+    % 5. Run Percentage (RP)
+    RP = mean(mean(glrlstcs(:,5,:)));
+    % 6. Low Gray-Level Run Emphasis (LGRE)
+    LGRE = mean(mean(glrlstcs(:,6,:)));
+    % 7. High Gray-Level Run Emphasis (HGRE)
+    HGRE = mean(mean(glrlstcs(:,7,:)));
+    % 8. Short Run Low Gray-Level Emphasis (SRLGE)
+    SGLGE =mean(mean(glrlstcs(:,8,:)));
+    % 9. Short Run High Gray-Level Emphasis (SRHGE)
+    SRHGE =mean(mean(glrlstcs(:,9,:)));
+    % 10. Long Run Low Gray-Level Emphasis (LRLGE)
+    LRLGE =mean(mean(glrlstcs(:,10,:)));
+    % 11.Long Run High Gray-Level Emphasis (LRHGE
+    LRHGE =mean(mean(glrlstcs(:,11,:)));
+   
 
+%grey level gradient features
+Imagegrdtmean=mean(grdtmean);
+Imagegrdtvar=mean(grdtvariance);
+Imagegrdtkts=mean(grdtkurtosis);
+Imagegrdtskw=mean(grdtskewness);
 
+%output features
+header = {'Mean';'Median';'std2';'std';'Contrast';'Correlation';'Energy';'Homogeneity';'SRE';'LRE';'GLN';'RLN';'RP';'LGRE';'HGRE';'SGLGE';'SRHGE';'LRLGE';'LRHGE';'grdtmean';'grdtvariance';'grdtkurtosis';'grdtskewness'};
+data = {Imagemean;Imagemedian;Imagestd2;Imagestd;ImageContrast;ImageCorrelation;ImageEnergy;ImageHomogeneity;SRE;LRE;GLN;RLN;RP;LGRE;HGRE;SGLGE;SRHGE;LRLGE;LRHGE;Imagegrdtmean;Imagegrdtvar;Imagegrdtkts;Imagegrdtskw};
+size(data)
 
-    
+ fid=fopen('MyFile.txt','w');
+for i=1:size(header)
+    fprintf(fid,'%s\t',header{i});
+end
+fprintf(fid,'%s\t',header{i});
+for i=1:size(data)
+    fprintf(fid,'%s\t',data{i});
+end
+%
+fclose(fid);true
+%     
     
