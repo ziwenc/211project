@@ -1,6 +1,8 @@
-clear;
-clc;
-info = mha_read_header("1000085970.mha");
+function [data] = Featureextraction(mhafile)
+%UNTITLED3 Summary of this function goes here
+%   Detailed explanation goes here
+
+info = mha_read_header(mhafile);
 V = mha_read_volume(info);
 [x,y,z]=size(V);
 Imagearray=[];
@@ -8,19 +10,14 @@ Imagesize=[];
 BoxImage={};
 A=[];
 k=1;
+cd images 
 for i = 1:z
     temp=V(:,:,i);
     if any(temp(:))
-%         i
         X = (squeeze(V(:,:,i)))';
-        
-  
-        %figure,imshow(X,[]);
-        %figure,imshow((V(:,:,i)),[]);
         idx=int2str(i);
         info = dicominfo(strcat(idx,'.dcm'));
         Y = dicomread(info);
-         %figure,imshow(Y,[0 4095]);
          min(min(Y))
          max(max(Y))
         C = Y;
@@ -111,17 +108,18 @@ Imagegrdtskw=mean(grdtskewness);
 %output features
 header = {'Mean';'Median';'std2';'std';'Contrast';'Correlation';'Energy';'Homogeneity';'SRE';'LRE';'GLN';'RLN';'RP';'LGRE';'HGRE';'SGLGE';'SRHGE';'LRLGE';'LRHGE';'grdtmean';'grdtvariance';'grdtkurtosis';'grdtskewness'};
 data = {Imagemean;Imagemedian;Imagestd2;Imagestd;ImageContrast;ImageCorrelation;ImageEnergy;ImageHomogeneity;SRE;LRE;GLN;RLN;RP;LGRE;HGRE;SGLGE;SRHGE;LRLGE;LRHGE;Imagegrdtmean;Imagegrdtvar;Imagegrdtkts;Imagegrdtskw};
-size(data)
+% size(data)
 
- fid=fopen('MyFile.txt','w');
-for i=1:size(header)
-    fprintf(fid,'%s\t',header{i});
-end
-fprintf(fid,'%s\t',header{i});
-for i=1:size(data)
-    fprintf(fid,'%s\t',data{i});
-end
-%
-fclose(fid);true
+% 
+%  fid=fopen('MyFile.xlsx','w');
+% for i=1:size(header)
+%     fprintf(fid,'%s\t',header{i});
+% end
+% fprintf(fid,'\n');
+% for i=1:size(data)
+%     fprintf(fid,'%s\t',data{i});
+% end
+% %
+% fclose(fid);true
 %     
-    
+    end
